@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { PackageX, Filter } from 'lucide-react';
+import { PackageX, Filter, ChevronRight } from 'lucide-react';
 import type { Produto } from '../types';
 import { ProductCard } from './ProductCard';
 
@@ -38,12 +38,12 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ produtos, searchQuery 
   // Empty State when catalog has no products at all
   if (!produtos || produtos.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-10 my-12 text-center bg-white rounded-3xl border border-slate-200 shadow-sm max-w-lg mx-auto">
-        <div className="w-16 h-16 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-500 mb-4">
+      <div className="flex flex-col items-center justify-center p-10 my-10 text-center bg-white rounded-3xl border border-slate-200/80 shadow-xs max-w-lg mx-auto">
+        <div className="w-16 h-16 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-500 mb-3">
           <PackageX className="w-8 h-8" />
         </div>
-        <h3 className="text-lg font-bold text-slate-900">Nenhum produto disponível no momento</h3>
-        <p className="text-sm text-slate-500 mt-1 max-w-xs">
+        <h3 className="text-lg font-extrabold text-slate-900">Nenhum produto disponível no momento</h3>
+        <p className="text-xs text-slate-500 mt-1 max-w-xs">
           Este catálogo está ativo, mas ainda não possui produtos cadastrados. Entre em contato com a fábrica para mais informações.
         </p>
       </div>
@@ -51,22 +51,31 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ produtos, searchQuery 
   }
 
   return (
-    <div className="py-6">
+    <div className="py-4">
       
-      {/* Category Pills (if categories exist) */}
-      {categories.length > 0 && (
-        <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-4 no-scrollbar">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-wider pr-2">
-            <Filter className="w-3.5 h-3.5" />
-            <span>Filtro:</span>
+      {/* Category Header & Filter Row (Matching screenshot exact header) */}
+      <div className="mb-4 space-y-2">
+        <div className="flex items-center justify-between text-xs font-semibold">
+          <div className="flex items-center gap-1.5 text-slate-700 font-bold">
+            <Filter className="w-3.5 h-3.5 text-orange-500" />
+            <span>Filtrar por Categoria</span>
           </div>
-          
+
+          {categories.length > 2 && (
+            <span className="text-[11px] font-medium text-slate-400 flex items-center gap-0.5">
+              Arraste para o lado <ChevronRight className="w-3 h-3" />
+            </span>
+          )}
+        </div>
+
+        {/* Scrollable Pills */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
           <button
             onClick={() => setSelectedCategory('todos')}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
+            className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
               selectedCategory === 'todos'
-                ? 'bg-slate-900 text-white shadow-sm'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                ? 'bg-orange-500 text-white shadow-xs shadow-orange-500/20'
+                : 'bg-white text-slate-700 border border-slate-200/80 hover:bg-slate-50'
             }`}
           >
             Todos ({produtos.length})
@@ -76,30 +85,30 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ produtos, searchQuery 
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
+              className={`px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                 selectedCategory === cat
-                  ? 'bg-orange-500 text-white shadow-sm shadow-orange-500/20'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                  ? 'bg-orange-500 text-white shadow-xs shadow-orange-500/20'
+                  : 'bg-white text-slate-700 border border-slate-200/80 hover:bg-slate-50'
               }`}
             >
               {cat}
             </button>
           ))}
         </div>
-      )}
+      </div>
 
       {/* No Search Results */}
       {filteredProducts.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-8 my-8 text-center bg-white rounded-2xl border border-slate-200">
+        <div className="flex flex-col items-center justify-center p-8 my-6 text-center bg-white rounded-2xl border border-slate-200/80">
           <PackageX className="w-10 h-10 text-slate-300 mb-2" />
-          <h4 className="font-bold text-slate-800 text-base">Nenhum produto encontrado</h4>
+          <h4 className="font-bold text-slate-800 text-sm">Nenhum produto encontrado</h4>
           <p className="text-xs text-slate-500 mt-0.5">
             Não encontramos nenhum produto que corresponda aos filtros aplicados.
           </p>
         </div>
       ) : (
-        /* Responsive Product Grid (2 columns on mobile, 3-4 on desktop) */
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+        /* List / Grid of Horizontal Cards matching screenshot layout */
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
           {filteredProducts.map((produto) => (
             <ProductCard key={produto.id_produto} produto={produto} />
           ))}

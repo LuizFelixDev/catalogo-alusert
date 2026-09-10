@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Minus, ShoppingCart, Check, Package } from 'lucide-react';
+import { Plus, Minus, Check, Package } from 'lucide-react';
 import type { Produto } from '../types';
 import { useCart } from '../context/CartContext';
 
@@ -47,125 +47,131 @@ export const ProductCard: React.FC<ProductCardProps> = ({ produto }) => {
   });
 
   return (
-    <div className="group flex flex-col bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-orange-200 transition-all duration-200 overflow-hidden relative">
+    <div className="group bg-white rounded-2xl p-3.5 sm:p-4 shadow-xs hover:shadow-md border border-slate-200/80 hover:border-orange-200 transition-all duration-200 flex flex-col gap-3 relative">
       
       {/* Badge if item is in cart */}
       {currentQuantityInCart > 0 && (
-        <div className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1 bg-slate-900 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-md animate-fade-in">
-          <Check className="w-3.5 h-3.5 text-orange-400" />
+        <div className="absolute top-2 right-2 z-10 flex items-center gap-1 bg-slate-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-xs animate-fade-in">
+          <Check className="w-3 h-3 text-orange-400" />
           <span>{currentQuantityInCart} no carrinho</span>
         </div>
       )}
 
-      {/* Image Container */}
-      <div className="relative w-full aspect-square bg-slate-100/80 overflow-hidden flex items-center justify-center border-b border-slate-100">
-        {produto.imagem && !imageError ? (
-          <img
-            src={produto.imagem}
-            alt={produto.nome}
-            onError={() => setImageError(true)}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            loading="lazy"
-          />
-        ) : (
-          /* Neutral AluSert Image Placeholder */
-          <div className="flex flex-col items-center justify-center p-4 text-center text-slate-400">
-            <div className="w-12 h-12 rounded-2xl bg-slate-200/60 flex items-center justify-center mb-2">
-              <Package className="w-6 h-6 text-slate-400" />
+      {/* Top Layout: Left Thumbnail + Right Info */}
+      <div className="flex gap-3.5 items-start">
+        
+        {/* Left Image Thumbnail Container */}
+        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-xl bg-slate-100/90 relative shrink-0 overflow-hidden border border-slate-100 flex items-center justify-center">
+          {produto.imagem && !imageError ? (
+            <img
+              src={produto.imagem}
+              alt={produto.nome}
+              onError={() => setImageError(true)}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              loading="lazy"
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center p-2 text-center text-slate-400">
+              <Package className="w-6 h-6 text-orange-500/80 mb-0.5" />
+              <span className="text-[9px] font-bold text-slate-400 leading-tight">AluSert Componente</span>
             </div>
-            <span className="text-[11px] font-semibold text-slate-400">AluSert Componente</span>
-          </div>
-        )}
+          )}
 
-        {produto.categoria && (
-          <span className="absolute bottom-2 left-2 text-[10px] font-bold bg-white/90 backdrop-blur-sm text-slate-700 px-2 py-0.5 rounded-md border border-slate-200/60 shadow-xs">
-            {produto.categoria}
-          </span>
-        )}
-      </div>
-
-      {/* Card Content */}
-      <div className="flex flex-col flex-1 p-3.5 sm:p-4">
-        <h3 className="font-bold text-slate-900 text-sm sm:text-base leading-snug line-clamp-2 min-h-[2.5rem]">
-          {produto.nome}
-        </h3>
-
-        {produto.descricao ? (
-          <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
-            {produto.descricao}
-          </p>
-        ) : (
-          <p className="text-xs text-slate-400 mt-1 italic">
-            Perfil de alta precisão em alumínio
-          </p>
-        )}
-
-        {/* Price & Unit */}
-        <div className="mt-auto pt-3 border-t border-slate-100 flex items-baseline justify-between gap-1">
-          <div>
-            <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Preço</span>
-            <div className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
-              <span className="text-xs font-bold text-orange-600 mr-0.5">R$</span>
-              {formattedPrice}
-            </div>
-          </div>
-          {produto.unidade && (
-            <span className="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
-              /{produto.unidade}
+          {/* Dark Category Pill Badge inside Image (matching design screenshot) */}
+          {produto.categoria && (
+            <span className="absolute bottom-1.5 left-1.5 right-1.5 bg-slate-900/85 backdrop-blur-xs text-white text-[9px] font-bold text-center py-0.5 rounded-md px-1 truncate shadow-xs">
+              {produto.categoria}
             </span>
           )}
         </div>
 
-        {/* Quantity Controls & Add Button */}
-        <div className="mt-3 flex items-center gap-2">
-          {/* Stepper */}
-          <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50/50 p-0.5">
-            <button
-              type="button"
-              onClick={handleDecrement}
-              aria-label="Diminuir quantidade"
-              className="w-7 h-7 flex items-center justify-center text-slate-600 hover:text-orange-600 hover:bg-white rounded-lg transition-all active:scale-90"
-            >
-              <Minus className="w-3.5 h-3.5" />
-            </button>
-            <span className="w-8 text-center text-xs font-extrabold text-slate-900">
-              {cartItem ? cartItem.quantidade : quantityInput}
-            </span>
-            <button
-              type="button"
-              onClick={handleIncrement}
-              aria-label="Aumentar quantidade"
-              className="w-7 h-7 flex items-center justify-center text-slate-600 hover:text-orange-600 hover:bg-white rounded-lg transition-all active:scale-90"
-            >
-              <Plus className="w-3.5 h-3.5" />
-            </button>
-          </div>
+        {/* Right Info Details */}
+        <div className="flex-1 min-w-0 flex flex-col">
+          <h3 className="font-extrabold text-slate-900 text-sm sm:text-base leading-snug line-clamp-2">
+            {produto.nome}
+          </h3>
 
-          {/* Add Button */}
-          <button
-            type="button"
-            onClick={handleAddToCart}
-            className={`flex-1 py-2 px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-95 shadow-sm ${
-              addedAnimation
-                ? 'bg-emerald-600 text-white shadow-emerald-500/20'
-                : 'bg-orange-500 hover:bg-orange-600 text-white shadow-orange-500/20'
-            }`}
-          >
-            {addedAnimation ? (
-              <>
-                <Check className="w-4 h-4" />
-                <span>Adicionado!</span>
-              </>
-            ) : (
-              <>
-                <ShoppingCart className="w-3.5 h-3.5" />
-                <span>{cartItem ? 'Adicionar +' : 'Adicionar'}</span>
-              </>
-            )}
-          </button>
+          {produto.descricao ? (
+            <p className="text-xs text-slate-500 mt-0.5 line-clamp-2 leading-relaxed">
+              {produto.descricao}
+            </p>
+          ) : (
+            <p className="text-xs text-slate-400 mt-0.5 italic">
+              Perfil de alta precisão em alumínio
+            </p>
+          )}
+
+          {/* Price Tag */}
+          <div className="mt-2">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">PREÇO</span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-base sm:text-lg font-black text-orange-600 tracking-tight">
+                R$ {formattedPrice}
+              </span>
+              {produto.unidade && (
+                <span className="text-xs font-medium text-slate-400">
+                  /{produto.unidade}
+                </span>
+              )}
+            </div>
+          </div>
         </div>
 
       </div>
+
+      {/* Bottom Row: Stepper + Add Button (Separated by Dashed Border) */}
+      <div className="pt-3 border-t border-dashed border-slate-200/90 flex items-center justify-between gap-3">
+        
+        {/* Stepper Controls */}
+        <div className="flex items-center rounded-xl bg-slate-100/80 p-0.5 border border-slate-200/60 shrink-0">
+          <button
+            type="button"
+            onClick={handleDecrement}
+            aria-label="Diminuir quantidade"
+            className="w-7 h-7 flex items-center justify-center text-slate-600 hover:text-orange-600 hover:bg-white rounded-lg transition-all active:scale-90 font-bold"
+          >
+            <Minus className="w-3.5 h-3.5" />
+          </button>
+
+          <span className="w-7 text-center text-xs font-black text-slate-900">
+            {cartItem ? cartItem.quantidade : quantityInput}
+          </span>
+
+          <button
+            type="button"
+            onClick={handleIncrement}
+            aria-label="Aumentar quantidade"
+            className="w-7 h-7 flex items-center justify-center text-slate-600 hover:text-orange-600 hover:bg-white rounded-lg transition-all active:scale-90 font-bold"
+          >
+            <Plus className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        {/* Add Button */}
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          className={`flex-1 py-2 px-4 rounded-xl font-extrabold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-95 shadow-xs ${
+            addedAnimation
+              ? 'bg-emerald-600 text-white shadow-emerald-500/20'
+              : 'bg-orange-500 hover:bg-orange-600 text-white shadow-orange-500/20'
+          }`}
+        >
+          {addedAnimation ? (
+            <>
+              <Check className="w-4 h-4" />
+              <span>Adicionado!</span>
+            </>
+          ) : (
+            <>
+              <Plus className="w-4 h-4 stroke-[3]" />
+              <span>{cartItem ? 'Adicionar +' : 'Adicionar'}</span>
+            </>
+          )}
+        </button>
+
+      </div>
+
     </div>
   );
 };

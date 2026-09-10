@@ -54,7 +54,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ tokenLink }) => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col pb-24 sm:pb-12">
+    <div className="min-h-screen bg-slate-50/80 flex flex-col pb-24 sm:pb-12">
       {/* Header with Search and Client Name */}
       <Header
         nomeCatalogo={catalogoData.nome_catalogo}
@@ -64,23 +64,26 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ tokenLink }) => {
       />
 
       {/* Main Content Showcase */}
-      <main className="container flex-1 py-4">
+      <main className="container flex-1 py-2">
         
-        {/* Top welcome card / Banner */}
-        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white rounded-3xl p-5 sm:p-6 shadow-xl mb-6 relative overflow-hidden">
-          <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-orange-500/20 to-transparent pointer-events-none" />
+        {/* Banner Card matching exact screenshot style */}
+        <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white rounded-2xl p-4 sm:p-5 shadow-lg my-2 relative overflow-hidden border border-slate-800">
+          <div className="absolute right-0 top-0 bottom-0 w-2/5 bg-gradient-to-l from-orange-500/15 via-orange-500/5 to-transparent pointer-events-none" />
           
-          <div className="relative z-10 max-w-xl space-y-1">
-            <span className="text-[11px] font-extrabold uppercase tracking-widest text-orange-400">
-              AluSert Catálogo Exclusivo
-            </span>
-            <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white">
+          <div className="relative z-10 space-y-1">
+            <div className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest text-orange-400">
+              <span className="text-orange-500">✦</span>
+              <span>ALUSERT CATÁLOGO EXCLUSIVO</span>
+            </div>
+
+            <h2 className="text-lg sm:text-xl font-extrabold tracking-tight text-white">
               {catalogoData.nome_cliente
                 ? `Seja bem-vindo, ${catalogoData.nome_cliente}!`
-                : (catalogoData.nome_catalogo || 'Produtos de Alta Performance')}
+                : (catalogoData.nome_catalogo || 'Seja bem-vindo!')}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-300 font-medium pt-1">
-              Confira os produtos com valores atualizados para seu pedido direto. Adicione os itens ao carrinho e confirme com um clique.
+
+            <p className="text-xs text-slate-300 font-normal leading-relaxed pt-0.5 max-w-xl">
+              Confira os produtos com valores atualizados para seu pedido direto. Adicione ao carrinho e confirme em um clique.
             </p>
           </div>
         </div>
