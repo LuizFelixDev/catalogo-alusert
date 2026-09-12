@@ -70,13 +70,7 @@ const DEMO_CATALOG: CatalogoResponse = {
  * GET /catalogo/:token_link
  */
 export async function getCatalogo(token_link: string): Promise<CatalogoResponse> {
-  // If demo token or empty token, return mock catalog for testing
-  if (token_link === 'demo' || token_link === 'exemplo') {
-    await new Promise((resolve) => setTimeout(resolve, 600)); // Simulate latency
-    return DEMO_CATALOG;
-  }
-
-  const url = `${API_BASE_URL}/catalogo/${encodeURIComponent(token_link)}`;
+  const url = `${API_BASE_URL}/catalogo/${encodeURIComponent(token_link || 'demo')}`;
 
   try {
     const response = await fetch(url, {
@@ -128,16 +122,7 @@ export async function enviarPedido(
   token_link: string,
   payload: PedidoRequest
 ): Promise<PedidoResponse> {
-  // Demo mode mock response
-  if (token_link === 'demo' || token_link === 'exemplo') {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    const randomNum = Math.floor(100000 + Math.random() * 900000);
-    return {
-      numero_pedido: `PED-${randomNum}`
-    };
-  }
-
-  const url = `${API_BASE_URL}/catalogo/${encodeURIComponent(token_link)}/pedido`;
+  const url = `${API_BASE_URL}/catalogo/${encodeURIComponent(token_link || 'demo')}/pedido`;
 
   try {
     const response = await fetch(url, {
