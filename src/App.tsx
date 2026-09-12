@@ -3,7 +3,7 @@ import { CartProvider } from './context/CartContext';
 import { CatalogPage } from './pages/CatalogPage';
 
 export const App: React.FC = () => {
-  const [tokenLink, setTokenLink] = useState<string>('demo');
+  const [tokenLink, setTokenLink] = useState<string>('geral');
 
   useEffect(() => {
     // Extract token_link from URL
@@ -16,14 +16,14 @@ export const App: React.FC = () => {
     if (cMatch && cMatch[1]) {
       setTokenLink(cMatch[1]);
     } else if (pathname.length > 1 && !pathname.startsWith('/src')) {
-      // Single path segment e.g. /my-token
       const token = pathname.replace(/^\//, '');
       if (token) setTokenLink(token);
     } else {
-      // Query param fallback e.g. ?token=XYZ or ?link=XYZ
       const queryToken = searchParams.get('token') || searchParams.get('link');
       if (queryToken) {
         setTokenLink(queryToken);
+      } else {
+        setTokenLink('geral');
       }
     }
   }, []);

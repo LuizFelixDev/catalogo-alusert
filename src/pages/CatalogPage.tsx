@@ -73,17 +73,19 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ tokenLink }) => {
           <div className="relative z-10 space-y-1">
             <div className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest text-orange-400">
               <span className="text-orange-500">✦</span>
-              <span>ALUSERT CATÁLOGO EXCLUSIVO</span>
+              <span>{catalogoData.nome_cliente ? 'ALUSERT CATÁLOGO EXCLUSIVO' : 'ALUSERT CATÁLOGO OFICIAL'}</span>
             </div>
 
             <h2 className="text-lg sm:text-xl font-extrabold tracking-tight text-white">
               {catalogoData.nome_cliente
                 ? `Seja bem-vindo, ${catalogoData.nome_cliente}!`
-                : (catalogoData.nome_catalogo || 'Seja bem-vindo!')}
+                : 'Seja bem-vindo à AluSert!'}
             </h2>
 
             <p className="text-xs text-slate-300 font-normal leading-relaxed pt-0.5 max-w-xl">
-              Confira os produtos com valores atualizados para seu pedido direto. Adicione ao carrinho e confirme em um clique.
+              {catalogoData.nome_cliente
+                ? 'Confira os produtos com valores exclusivos negociados para seu pedido direto. Adicione ao carrinho e confirme em um clique.'
+                : 'Confira nossos produtos de fábrica com pronta entrega e qualidade garantida. Adicione ao carrinho e faça seu pedido direto.'}
             </p>
           </div>
         </div>
