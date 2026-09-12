@@ -1,7 +1,7 @@
 import type { CatalogoResponse, PedidoRequest, PedidoResponse } from '../types';
 
 // Read API base URL from environment or default to relative root
-const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 // Mock catalog for fallback/demo purposes
 const DEMO_CATALOG: CatalogoResponse = {
@@ -88,16 +88,23 @@ export async function getCatalogo(token_link: string): Promise<CatalogoResponse>
 
     if (response.status === 404) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.erro || 'Catálogo não encontrado ou inativo');
+      throw new Error(errorData.error || errorData.erro || 'Catálogo não encontrado ou inativo');
     }
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.erro || `Erro ao carregar catálogo (${response.status})`);
+      throw new Error(errorData.error || errorData.erro || `Erro ao carregar catálogo (${response.status})`);
     }
 
-    const data: CatalogoResponse = await response.json();
-    return data;
+    const data: any = await response.json();
+    return {
+      nome_cliente: data.nome_cliente,
+      nome_catalogo: data.nome_catalogo || (data.nome_cliente ? `Catálogo - ${data.nome_cliente}` : 'Catálogo AluSert'),
+      produtos: Array.isArray(data.produtos) ? data.produtos.map((p: any) => ({
+        ...p,
+        unidade: p.unidade || p.unidade_medida || 'un'
+      })) : []
+    };
   } catch (error: any) {
     // If backend is not running locally during development, provide friendly fallback if token starts with 'dev'
     if (import.meta.env.DEV && (error.message.includes('Failed to fetch') || error.name === 'TypeError')) {
@@ -145,12 +152,12 @@ export async function enviarPedido(
     const data = await response.json().catch(() => ({}));
 
     if (!response.ok) {
-      const mensageErro = data.erro || data.mensagem || 'Erro ao processar seu pedido. Tente novamente.';
+      const mensageErro = data.error || data.erro || data.mensagem || data.message || 'Erro ao processar seu pedido. Tente novamente.';
       throw new Error(mensageErro);
     }
 
     return {
-      numero_pedido: data.numero_pedido || `PED-${Math.floor(10000 + Math.random() * 90000)}`
+      numero_pedido: data.numero_pedido || (data.id_pedido ? `#${data.id_pedido}` : `PED-${Math.floor(10000 + Math.random() * 90000)}`)
     };
   } catch (error: any) {
     // Fallback for dev testing if server isn't running
